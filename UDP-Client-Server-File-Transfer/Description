@@ -1,0 +1,4 @@
+
+Using udp protocol
+
+Client sends file to server. Server writes down the data in file to some other file.
