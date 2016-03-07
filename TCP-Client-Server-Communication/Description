@@ -1,0 +1,37 @@
+
+The goal of TCP binding is to hook Caché up to a widespread networking standard so that basic features of the underlying 
+network protocol are available to Caché users through I/O commands.
+The TCP/IP protocol allows systems to communicate even if they use different types of network hardware. For example, TCP, 
+through an Internet connection, transmits messages between a system using Ethernet and another system using Token Ring. 
+TCP controls the accuracy of data transmission. IP, or Internet Protocol, performs the actual data transfer between 
+different systems on the network or Internet.
+Using TCP binding, you can create both client and server portions of client/server systems. In the client/server type of 
+distributed database system, users on one or more client systems can process information stored in a database on another 
+system, called the server.
+
+TCP Connections Overview
+To create a client/server relationship between systems, you must follow a particular set of conventions:
+
+    Your systems must be connected with appropriate networking hardware and software, including TCP/IP protocol software.
+    Systems communicate with each other through a TCP port. The processes at both ends of the connection must use the same 
+    port number.
+    You specify either the TCP port number, or the devicename of the device that represents it, as the device in Caché OPEN, 
+    USE, and CLOSE commands.
+
+Using these conventions, the general procedure of establishing a TCP binding connection is:
+
+    The server process issues an OPEN command to a TCP device.
+    The server process issues a USE command, followed by a READ command, awaiting input from the client process. The server 
+    must be listening before a client can establish a connection. The initial READ command completes when the client has 
+    opened the connection and sent some data. You can include the “A” mode parameter in the OPEN command to make the 
+    initial READ complete as soon as the server accepts the connection.
+    The client process issues an OPEN command that specifies the TCP device to which it is connecting.
+    The client process issues a USE command followed by a WRITE command to complete the connection. Caché copies all characters 
+    in the WRITE command(s) to a buffer. It does not write them to the network until you issue a WRITE ! or WRITE # command to 
+    flush the buffer.
+    After the server has read the characters that the client sent in its first WRITE command, both sides can continue to issue 
+    READ and WRITE commands. There is no further restriction on the order of these commands to the same port.
+    Either side can initiate the closing of a connection with the CLOSE or HALT command. Closing the client side first is 
+    preferable. If the server needs to disconnect so that it can accept a connection from another client process, it can 
+    instead issue either a WRITE *-2 command, or for compatibility with older versions, a USE command with the “DISCONNECT” 
+    option, and follow either one with a READ command.
