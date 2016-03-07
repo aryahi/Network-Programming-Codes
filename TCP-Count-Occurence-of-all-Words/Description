@@ -1,0 +1,2 @@
+
+Server sends message to client. Client counts the occurence of word in the given message.
